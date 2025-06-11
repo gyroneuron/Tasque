@@ -3,6 +3,8 @@ import { Task, TaskFilter, TaskSort } from "@/src/types/index";
 import { storageService } from "@/src/services/storage";
 import { apiService } from "@/src/services/api";
 
+
+const TASK_COLORS = ['#FFF84E', '#FFA3FF', '#91F7FF', '#90FFA5', '#A5AAFF'];
 interface TaskState {
   tasks: Task[];
   loading: boolean;
@@ -27,7 +29,7 @@ export const fetchInitialTasks = createAsyncThunk(
       const localTasks = await storageService.getTasks();
 
       const convertedTasks: Task[] = remoteTasks.map(todo => ({
-        id: `remote-${todo.id}`, // Unique ID fix
+        id: `remote-${todo.id}`,
         title: todo.title,
         description: '',
         dueDate: new Date(Date.now() + Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
@@ -35,6 +37,7 @@ export const fetchInitialTasks = createAsyncThunk(
         completed: todo.completed,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        color: TASK_COLORS[Math.floor(Math.random() * TASK_COLORS.length)],
       }));
 
       const allTasks = [...(convertedTasks ?? []), ...(localTasks ?? [])]; // <- Prevent undefined
@@ -56,6 +59,7 @@ export const addTask = createAsyncThunk(
   async (taskData: Omit<Task, "id" | "createdAt" | "updatedAt">) => {
     const newTask: Task = {
       ...taskData,
+      color: taskData.color || TASK_COLORS[0], // <-- Ensure color is set
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
