@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Task, TaskFilter, TaskSort } from '@/src/types/index';
-import { storageService } from '../services/storage';
-import { apiService } from '../services/api';
+import { storageService } from '@/src/services/storage';
+import { apiService } from '@/src/services/api';
 
 interface TaskState {
   tasks: Task[];

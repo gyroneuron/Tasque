@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { Video } from '@/src/types/index';
-import { apiService } from '../services/api';
-import { storageService } from '../services/storage';
+import { apiService } from '@/src/services/api';
+import { storageService } from '@/src/services/storage';
 
 interface VideoState {
   videos: Video[];

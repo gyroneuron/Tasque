@@ -5,16 +5,16 @@ const TabLayout = () => {
   return (
     <Tabs>
       <Tabs.Screen
-        name="index"
+        name="OfflineVideoScreen"
         options={{
           title: 'Tasks',
           headerShown: false,
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="Dashboard"
         options={{
-          title: 'Explore',
+          title: 'Dashboard',
           headerShown: false,
         }}
       />

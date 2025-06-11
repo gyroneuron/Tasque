@@ -13,10 +13,15 @@ export interface Video {
   id: string;
   title: string;
   description: string;
-  sources: string[];
-  subtitle: string;
-  thumb: string;
-  downloaded: boolean;
+  author: string;
+  duration: string;
+  isLive: boolean;
+  subscriber: string;
+  thumbnailUrl: string;
+  uploadTime: string;
+  videoUrl: string;
+  views: string;
+  downloaded?: boolean;
   downloadProgress?: number;
   localPath?: string;
 }
