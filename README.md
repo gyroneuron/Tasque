@@ -58,29 +58,17 @@ A comprehensive React Native application combining powerful task management with
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/tasque.git
-   cd tasque
+   git clone https://github.com/gyroneuron/Tasque.git
+   cd Tasque
    ```
 
 2. **Install dependencies**
    ```bash
    npm install
-   # or
-   yarn install
-   ```
 
 3. **Install iOS dependencies** (macOS only)
    ```bash
    cd ios && pod install && cd ..
-   ```
-
-4. **Environment setup**
-   ```bash
-   # Copy environment template
-   cp .env.example .env
-   
-   # Edit .env with your configuration
-   nano .env
    ```
 
 5. **Start the development server**
@@ -92,21 +80,6 @@ A comprehensive React Native application combining powerful task management with
    npx expo run:android
    npx expo run:ios
    ```
-
-### Build for Production
-
-```bash
-# Android APK
-npx expo build:android --type apk
-
-# Android Bundle
-npx expo build:android --type app-bundle
-
-# iOS Archive
-npx expo build:ios --type archive
-```
-
----
 
 ## 🏗️ Architecture & Folder Structure
 
@@ -120,38 +93,43 @@ npx expo build:ios --type archive
 
 ```
 src/
-├── components/           # Reusable UI components
-│   ├── ui/              # Basic UI elements (buttons, inputs)
-│   ├── task/            # Task-specific components
-│   ├── video/           # Video-related components
-│   └── common/          # Shared components
-├── screens/             # Screen components
-│   ├── Dashboard.tsx    # Main task dashboard
-│   ├── VideoApp.tsx     # Video library screen
-│   ├── Tasks/           # Task management screens
-│   └── index.tsx        # Welcome/onboarding screen
-├── store/               # Redux store configuration
-│   ├── slices/          # Redux Toolkit slices
-│   │   ├── taskSlice.ts # Task state management
-│   │   └── videoSlice.ts# Video state management
-│   └── index.ts         # Store configuration
-├── hooks/               # Custom React hooks
-│   ├── useVideoApp.ts   # Video functionality hook
-│   └── useTasks.ts      # Task management hook
-├── types/               # TypeScript type definitions
-│   ├── task.ts          # Task-related types
-│   ├── video.ts         # Video-related types
-│   └── index.ts         # Exported types
-├── utils/               # Utility functions
-│   ├── dateUtils.ts     # Date formatting utilities
-│   ├── urlUtils.ts      # URL sanitization utilities
-│   └── Responsive.ts    # Screen scaling utilities
-├── services/            # API and external services
-│   ├── api.ts           # API client configuration
-│   └── storage.ts       # AsyncStorage helpers
-└── constants/           # App constants and configuration
-    ├── Colors.ts        # Color palette
-    └── Layout.ts        # Layout constants
+├── app/                     # Main app structure
+│   ├── (tabs)/             # Tab-based navigation screens
+│   │   ├── _layout.tsx     # Tab layout configuration
+│   │   ├── Dashboard.tsx   # Main task dashboard
+│   │   └── VideoScreen.tsx # Video library screen
+│   ├── Tasks/              # Task management screens
+│   │   ├── _layout.tsx     # Task stack layout
+│   │   ├── AddEditTaskScreen.tsx
+│   │   └── TaskDetailsScreen.tsx
+│   ├── _layout.tsx         # Root layout
+│   └── index.tsx           # Welcome/onboarding screen
+├── components/             # Reusable UI components
+│   ├── LoadingSpinner.tsx  # Loading component
+│   ├── TaskCard.tsx        # Task display component
+│   ├── TaskForm.tsx        # Task creation/edit form
+│   ├── VideoEmptyState.tsx # Video empty state
+│   ├── VideoHeader.tsx     # Video screen header
+│   ├── VideoItems.tsx      # Video list components
+│   └── VideoPlayer.tsx     # Video player component
+├── constants/              # App constants
+├── hooks/                  # Custom React hooks
+│   └── useVideoApp.ts      # Video functionality hook
+├── services/               # API and external services
+│   ├── api.ts              # API client configuration
+│   └── storage.ts          # AsyncStorage helpers
+├── store/                  # Redux store configuration
+│   ├── slices/             # Redux Toolkit slices
+│   │   ├── taskSlice.ts    # Task state management
+│   │   ├── videoSlice.ts   # Video state management
+│   │   └── index.ts        # Slice exports
+│   └── index.ts            # Store configuration
+├── types/                  # TypeScript type definitions
+│   ├── index.ts            # Common types
+│   └── video.ts            # Video-related types
+└── utils/                  # Utility functions
+    ├── dateUtils.ts        # Date formatting utilities
+    └── Responsive.ts       # Screen scaling utilities
 ```
 
 ### **Key Architectural Decisions**
@@ -229,7 +207,6 @@ src/
 - **Background Sync** - Sync data when connection restored
 
 ### **Security Considerations**
-- **URL Sanitization** - Convert HTTP to HTTPS when possible
 - **Input Validation** - Prevent XSS and injection attacks
 - **Secure Storage** - Encrypted storage for sensitive data
 - **Network Security** - Proper certificate validation
@@ -300,7 +277,7 @@ src/
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
+We welcome contributions!
 
 ### **Development Workflow**
 1. Fork the repository
@@ -317,26 +294,16 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 ---
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
 ## 👥 Team
 
-- **Lead Developer** - [Your Name](https://github.com/yourusername)
-- **UI/UX Designer** - [Designer Name](https://github.com/designer)
-- **Backend Developer** - [Backend Dev](https://github.com/backend)
+- **Lead Developer** - [GyroNeuron](https://github.com/gyroneuron)
+- **UI/UX Designer** - [Designer Name](https://github.com/gyroneuron)
 
 ---
 
 ## 📞 Support
 
 - 📧 **Email** - support@tasque.app
-- 💬 **Discord** - [Join our community](https://discord.gg/tasque)
-- 🐛 **Issues** - [GitHub Issues](https://github.com/yourusername/tasque/issues)
-- 📖 **Documentation** - [Full Documentation](https://docs.tasque.app)
 
 ---
 
@@ -344,6 +311,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Made with ❤️ for productivity enthusiasts**
 
-[⭐ Star us on GitHub](https://github.com/yourusername/tasque) • [📱 Download from App Store](https://apps.apple.com/app/tasque) • [🤖 Get it on Google Play](https://play.google.com/store/apps/details?id=com.tasque)
+[⭐ Star us on GitHub](https://github.com/gyroneuron/Tasque)
 
 </div>
