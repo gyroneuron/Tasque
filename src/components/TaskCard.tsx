@@ -1,7 +1,8 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Pressable } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, Pressable, Animated } from 'react-native';
 import { Task } from '../types';
 import { formatTime, getPriorityColor, isOverdue } from '../utils/dateUtils';
+import { SymbolView } from 'expo-symbols';
 
 interface TaskCardProps {
   task: Task;
@@ -9,9 +10,40 @@ interface TaskCardProps {
   onToggleComplete: () => void;
 }
 
+const getAnimationSpeed = (priority: 'low' | 'medium' | 'high') => {
+  switch (priority) {
+    case 'high':
+      return 1000;
+    case 'medium':
+      return 2000;
+    default:
+      return 3000;
+  }
+};
+
 export const TaskCard: React.FC<TaskCardProps> = ({ task, onPress, onToggleComplete }) => {
   const priorityColor = getPriorityColor(task.priority);
   const overdue = isOverdue(task.dueDate);
+  const animationDuration = getAnimationSpeed(task.priority);
+  const rotateValue = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const startRotation = () => {
+      rotateValue.setValue(0);
+      Animated.timing(rotateValue, {
+        toValue: 1,
+        duration: animationDuration,
+        useNativeDriver: true,
+      }).start(() => startRotation());
+    };
+
+    startRotation();
+  }, [animationDuration, rotateValue]);
+
+  const rotate = rotateValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
 
   return (
     <Pressable onPress={onPress} className="mb-3">
@@ -35,16 +67,16 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onPress, onToggleCompl
                 className={`w-2 h-2 rounded-full mr-2`}
                 style={{ backgroundColor: priorityColor }}
               />
+
+              <Text 
+                className={`text-xl font-medium mb-1 ${
+                  task.completed ? 'line-through text-gray-500' : 'text-gray-900'
+                }`}
+                numberOfLines={2}
+              >
+                {task.title}
+              </Text>
             </View>
-            
-            <Text 
-              className={`text-base font-medium mb-1 ${
-                task.completed ? 'line-through text-gray-500' : 'text-gray-900'
-              }`}
-              numberOfLines={2}
-            >
-              {task.title}
-            </Text>
             
             {task.description && (
               <Text 
@@ -58,9 +90,14 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onPress, onToggleCompl
             )}
             
             <View className="flex-row items-center">
-              <Text className="text-xs text-gray-500 mr-2">⏰</Text>
+                <SymbolView
+                  name="clock"
+                  colors={[overdue && !task.completed ? 'red' : priorityColor]}
+                  size={16}
+                  weight="regular"
+                />
               <Text 
-                className={`text-xs ${
+                className={`text-xs ml-1 ${
                   overdue && !task.completed ? 'text-red-500' : 'text-gray-500'
                 }`}
               >

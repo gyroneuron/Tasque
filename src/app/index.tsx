@@ -17,7 +17,7 @@ const index = () => {
         <Button
           title="Go to Tasks"
           onPress={() => {
-           router.push('/(tabs)/OfflineVideoScreen')
+           router.push('/(tabs)/Dashboard')
           }}
         />
     </SafeAreaView>

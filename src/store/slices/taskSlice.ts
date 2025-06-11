@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Task, TaskFilter, TaskSort } from '@/src/types/index';
-import { storageService } from '@/src/services/storage';
-import { apiService } from '@/src/services/api';
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { Task, TaskFilter, TaskSort } from "@/src/types/index";
+import { storageService } from "@/src/services/storage";
+import { apiService } from "@/src/services/api";
 
 interface TaskState {
   tasks: Task[];
@@ -15,8 +15,8 @@ const initialState: TaskState = {
   tasks: [],
   loading: false,
   error: null,
-  filter: 'all',
-  sort: 'dueDate',
+  filter: "all",
+  sort: "dueDate",
 };
 
 export const fetchInitialTasks = createAsyncThunk(
@@ -25,10 +25,9 @@ export const fetchInitialTasks = createAsyncThunk(
     try {
       const remoteTasks = await apiService.fetchTodos();
       const localTasks = await storageService.getTasks();
-      
-      // Convert remote todos to our task format
+
       const convertedTasks: Task[] = remoteTasks.map(todo => ({
-        id: todo.id.toString(),
+        id: `remote-${todo.id}`, // Unique ID fix
         title: todo.title,
         description: '',
         dueDate: new Date(Date.now() + Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
@@ -38,26 +37,30 @@ export const fetchInitialTasks = createAsyncThunk(
         updatedAt: new Date().toISOString(),
       }));
 
-      const allTasks = [...convertedTasks, ...localTasks];
-      await storageService.saveTasks(allTasks);
-      return allTasks;
+      const allTasks = [...(convertedTasks ?? []), ...(localTasks ?? [])]; // <- Prevent undefined
+      const uniqueTasks = Array.from(new Map(allTasks.map(t => [t.id, t])).values());
+
+      await storageService.saveTasks(uniqueTasks);
+      return uniqueTasks;
     } catch (error) {
+      console.error('fetchInitialTasks error:', error);
       const localTasks = await storageService.getTasks();
-      return localTasks;
+      return localTasks ?? [];
     }
   }
 );
 
+
 export const addTask = createAsyncThunk(
-  'tasks/add',
-  async (taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => {
+  "tasks/add",
+  async (taskData: Omit<Task, "id" | "createdAt" | "updatedAt">) => {
     const newTask: Task = {
       ...taskData,
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    
+
     const currentTasks = await storageService.getTasks();
     const updatedTasks = [...currentTasks, newTask];
     await storageService.saveTasks(updatedTasks);
@@ -66,11 +69,13 @@ export const addTask = createAsyncThunk(
 );
 
 export const updateTask = createAsyncThunk(
-  'tasks/update',
+  "tasks/update",
   async (updatedTask: Task) => {
     const currentTasks = await storageService.getTasks();
-    const updatedTasks = currentTasks.map(task =>
-      task.id === updatedTask.id ? { ...updatedTask, updatedAt: new Date().toISOString() } : task
+    const updatedTasks = currentTasks.map((task) =>
+      task.id === updatedTask.id
+        ? { ...updatedTask, updatedAt: new Date().toISOString() }
+        : task
     );
     await storageService.saveTasks(updatedTasks);
     return updatedTask;
@@ -78,17 +83,17 @@ export const updateTask = createAsyncThunk(
 );
 
 export const deleteTask = createAsyncThunk(
-  'tasks/delete',
+  "tasks/delete",
   async (taskId: string) => {
     const currentTasks = await storageService.getTasks();
-    const updatedTasks = currentTasks.filter(task => task.id !== taskId);
+    const updatedTasks = currentTasks.filter((task) => task.id !== taskId);
     await storageService.saveTasks(updatedTasks);
     return taskId;
   }
 );
 
 const taskSlice = createSlice({
-  name: 'tasks',
+  name: "tasks",
   initialState,
   reducers: {
     setFilter: (state, action: PayloadAction<TaskFilter>) => {
@@ -98,7 +103,7 @@ const taskSlice = createSlice({
       state.sort = action.payload;
     },
     toggleTaskStatus: (state, action: PayloadAction<string>) => {
-      const task = state.tasks.find(t => t.id === action.payload);
+      const task = state.tasks.find((t) => t.id === action.payload);
       if (task) {
         task.completed = !task.completed;
         task.updatedAt = new Date().toISOString();
@@ -117,19 +122,19 @@ const taskSlice = createSlice({
       })
       .addCase(fetchInitialTasks.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch tasks';
+        state.error = action.error.message || "Failed to fetch tasks";
       })
       .addCase(addTask.fulfilled, (state, action) => {
         state.tasks.push(action.payload);
       })
       .addCase(updateTask.fulfilled, (state, action) => {
-        const index = state.tasks.findIndex(t => t.id === action.payload.id);
+        const index = state.tasks.findIndex((t) => t.id === action.payload.id);
         if (index !== -1) {
           state.tasks[index] = action.payload;
         }
       })
       .addCase(deleteTask.fulfilled, (state, action) => {
-        state.tasks = state.tasks.filter(t => t.id !== action.payload);
+        state.tasks = state.tasks.filter((t) => t.id !== action.payload);
       });
   },
 });
