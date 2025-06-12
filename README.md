@@ -14,6 +14,9 @@ A comprehensive React Native application combining powerful task management with
 </div>
 
 ---
+<img width="333" alt="Screenshot 2025-06-10 at 10 50 39 PM" src="https://github.com/user-attachments/assets/03002d45-c08d-4239-99cf-46d8df055866" />
+![Simulator Screenshot - iPhone 16 Pro - 2025-06-11 at 18 34 30](https://github.com/user-attachments/assets/98cb301e-208e-4a31-8d95-5d4cebb62d1f)
+![Simulator Screenshot - iPhone 16 Pro - 2025-06-11 at 18 35 39](https://github.com/user-attachments/assets/b536be26-17f1-41b5-8e0a-6929dc9354f2)
 
 ## 📱 Features Overview
 
